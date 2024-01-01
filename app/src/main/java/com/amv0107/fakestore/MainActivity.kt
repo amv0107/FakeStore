@@ -13,9 +13,11 @@ import com.amv0107.fakestore.databinding.ActivityMainBinding
 import com.amv0107.fakestore.hilt.service.ProductsServices
 import com.amv0107.fakestore.model.domain.Product
 import com.amv0107.fakestore.model.mapper.ProductMapper
+import com.amv0107.fakestore.model.ui.UiProduct
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import retrofit2.Response
@@ -38,16 +40,20 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val controller = ProductEpoxyController()
+        val controller = UiProductEpoxyController()
         binding.epoxyRecyclerView.setController(controller)
         controller.setData(emptyList())
 
-        viewModel.store.stateFlow.map {
-            it.products
-        }.distinctUntilChanged().asLiveData().observe(this) { products ->
-            controller.setData(products)
+        combine(
+            viewModel.store.stateFlow.map { it.products },
+            viewModel.store.stateFlow.map { it.favoriteProductsIds }
+        ) { listOfProducts, setOfFavoriteIds ->
+            listOfProducts.map { product ->
+                UiProduct(product = product, isFavorite = setOfFavoriteIds.contains(product.id))
+            }
+        }.distinctUntilChanged().asLiveData().observe(this) { uiProducts ->
+            controller.setData(uiProducts)
         }
-
         viewModel.refreshProducts()
     }
 
