@@ -1,6 +1,7 @@
 package com.amv0107.fakestore.hilt
 
 import com.amv0107.fakestore.MainActivity
+import com.amv0107.fakestore.hilt.service.ProductsServices
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,7 +39,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun providesProductsService(retrofit: Retrofit): MainActivity.ProductsServices {
-        return retrofit.create(MainActivity.ProductsServices::class.java)
+    fun providesProductsService(retrofit: Retrofit): ProductsServices {
+        return retrofit.create(ProductsServices::class.java)
     }
 }
