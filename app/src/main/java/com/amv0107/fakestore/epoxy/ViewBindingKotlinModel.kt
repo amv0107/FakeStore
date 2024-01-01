@@ -29,14 +29,23 @@ abstract class ViewBindingKotlinModel<T : ViewBinding>(
 
     abstract fun T.bind()
 
-    @Suppress("UNCHECKED_CAST")
+    open fun T.unbind() {}
+
     override fun bind(view: View) {
-        var binding = view.getTag(R.id.epoxy_viewBinding) as? T
+        view.getBinding().bind()
+    }
+
+    override fun unbind(view: View) {
+        view.getBinding().unbind()
+    }
+    @Suppress("UNCHECKED_CAST")
+    protected fun View.getBinding(): T {
+        var binding = getTag(R.id.epoxy_viewBinding) as? T
         if (binding == null) {
-            binding = bindingMethod.invoke(null, view) as T
-            view.setTag(R.id.epoxy_viewBinding, binding)
+            binding = bindingMethod.invoke(null, this) as T
+            setTag(R.id.epoxy_viewBinding, binding)
         }
-        binding.bind()
+        return binding
     }
 
     override fun getDefaultLayout() = layoutRes

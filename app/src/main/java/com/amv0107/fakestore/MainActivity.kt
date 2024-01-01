@@ -11,7 +11,9 @@ import com.amv0107.fakestore.databinding.ActivityMainBinding
 import com.amv0107.fakestore.hilt.service.ProductsServices
 import com.amv0107.fakestore.model.domain.Product
 import com.amv0107.fakestore.model.mapper.ProductMapper
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -36,14 +38,18 @@ class MainActivity : AppCompatActivity() {
 
         val controller = ProductEpoxyController()
         binding.epoxyRecyclerView.setController(controller)
+        controller.setData(emptyList())
 
         lifecycleScope.launchWhenStarted {
             val response = productService.getAllProducts()
-            Log.i("DATA", response.body()!!.toString())
             val domainProducts: List<Product> = response.body()!!.map {
-                productMapper.buildFrom(it)
-            }
+                productMapper.buildFrom(networkProduct =  it)
+            } ?: emptyList()
             controller.setData(domainProducts)
+
+            if (domainProducts.isEmpty()){
+                Snackbar.make(binding.root, "Failed to fetch", Snackbar.LENGTH_LONG).show()
+            }
         }
     }
 
