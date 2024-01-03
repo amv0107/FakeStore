@@ -8,6 +8,8 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupActionBarWithNavController
 import coil.load
 import com.amv0107.fakestore.databinding.ActivityMainBinding
 import com.amv0107.fakestore.hilt.service.ProductsServices
@@ -31,30 +33,18 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val viewModel: MainActivityViewModel by lazy {
-        ViewModelProvider(this)[MainActivityViewModel::class.java]
-    }
+//    private val viewModel: MainActivityViewModel by lazy {
+//        ViewModelProvider(this)[MainActivityViewModel::class.java]
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val controller = UiProductEpoxyController(viewModel)
-        binding.epoxyRecyclerView.setController(controller)
-        controller.setData(emptyList())
-
-        combine(
-            viewModel.store.stateFlow.map { it.products },
-            viewModel.store.stateFlow.map { it.favoriteProductsIds }
-        ) { listOfProducts, setOfFavoriteIds ->
-            listOfProducts.map { product ->
-                UiProduct(product = product, isFavorite = setOfFavoriteIds.contains(product.id))
-            }
-        }.distinctUntilChanged().asLiveData().observe(this) { uiProducts ->
-            controller.setData(uiProducts)
-        }
-        viewModel.refreshProducts()
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        setupActionBarWithNavController(navController)
     }
 
 
