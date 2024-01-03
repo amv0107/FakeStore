@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val controller = UiProductEpoxyController()
+        val controller = UiProductEpoxyController(viewModel)
         binding.epoxyRecyclerView.setController(controller)
         controller.setData(emptyList())
 

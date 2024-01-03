@@ -10,7 +10,8 @@ import com.amv0107.fakestore.model.ui.UiProduct
 import java.text.NumberFormat
 
 data class UiProductEpoxyModel(
-    val uiProduct: UiProduct?
+    val uiProduct: UiProduct?,
+    val onFavoriteIconClicked: (Int) -> Unit
 ): ViewBindingKotlinModel<EpoxyModelProductItemBinding>(R.layout.epoxy_model_product_item){
 
     private val currencyFormat = NumberFormat.getCurrencyInstance()
@@ -34,6 +35,9 @@ data class UiProductEpoxyModel(
             else
                 R.drawable.ic_round_favorite_border_24
             favoriteImageView.setIconResource(imageRes)
+            favoriteImageView.setOnClickListener {
+                onFavoriteIconClicked(uiProduct.product.id)
+            }
 
             // Load our image
             productImageViewLoadingProgressBar.isVisible = true
