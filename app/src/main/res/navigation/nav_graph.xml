@@ -7,8 +7,13 @@
 
     <fragment android:id="@+id/productListFragment"
         android:name="com.amv0107.fakestore.ProductListFragment"
-        android:label="Droduct list"
+        android:label="All products"
         tools:layout="@layout/fragment_products_list"/>
+
+    <fragment android:id="@+id/profileFragment"
+        android:name="com.amv0107.fakestore.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile"/>
 
 
 </navigation>

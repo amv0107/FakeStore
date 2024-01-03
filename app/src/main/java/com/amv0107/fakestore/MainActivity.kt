@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import coil.load
 import com.amv0107.fakestore.databinding.ActivityMainBinding
@@ -42,9 +44,17 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val appBarConfiguration = AppBarConfiguration(
+            topLevelDestinationIds = setOf(
+                R.id.productListFragment,
+                R.id.profileFragment
+            )
+        )
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
         val navController = navHostFragment.navController
-        setupActionBarWithNavController(navController)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+
+        NavigationUI.setupWithNavController(binding.bottomNavigationView, navController)
     }
 
 
